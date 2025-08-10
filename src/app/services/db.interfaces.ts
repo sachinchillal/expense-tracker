@@ -1,0 +1,5 @@
+export enum RECORD_STATUS {
+  ACTIVE = 'ACTIVE',
+  DISABLED = 'DISABLED',
+  DELETED = 'DELETED'
+}

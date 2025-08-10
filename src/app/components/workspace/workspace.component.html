@@ -1,0 +1,20 @@
+<div class="max-w-md mx-auto mt-10 p-6 bg-white dark:bg-zinc-900 rounded shadow">
+  <h2 class="text-2xl font-bold mb-6 text-center">
+    {{id ? 'Edit Page' : 'Create Page'}}
+  </h2>
+  <form (ngSubmit)="createRecord()" autocomplete="off" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium mb-1" for="name">Name</label>
+      <input id="name" name="name" type="text" [(ngModel)]="name"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+        required />
+    </div>
+    <div>
+      <label class="block text-sm font-medium mb-1" for="description">Description</label>
+      <input id="description" name="description" type="text" [(ngModel)]="description"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+        required />
+    </div>
+    <button type="submit" class="primary-btn w-full">{{id ? 'Update' : 'Create'}}</button>
+  </form>
+</div>

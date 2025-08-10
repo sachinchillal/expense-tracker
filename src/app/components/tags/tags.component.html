@@ -1,0 +1,36 @@
+<div class="flex items-center gap-2 mb-4">
+  <h1 class="text-2xl text-green-700">Tags</h1>
+  <i class="ms-auto"></i>
+  <button class="bg-green-700 text-white text-sm px-2 rounded" (click)="appService.fetchTags()">Refresh</button>
+  <a class="bg-green-700 text-white text-sm px-2 rounded" routerLink="/tag">Add Tag</a>
+</div>
+<div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="py-3 px-6">#</th>
+        <th scope="col" class="py-3 px-6">Name</th>
+        <th scope="col" class="py-3 px-6">Description</th>
+        <th scope="col" class="py-3 px-6">Status</th>
+        <th scope="col" class="py-3 px-6">Created At</th>
+        <th scope="col" class="py-3 px-6">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tag of appService.tags; let i = index"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          {{ i + 1 }}
+        </th>
+        <td class="py-4 px-6">{{ tag.name }}</td>
+        <td class="py-4 px-6">{{ tag.description }}</td>
+        <td class="py-4 px-6">{{ tag.status }}</td>
+        <td class="py-4 px-6">{{ tag.createdAt | date: 'medium' }}</td>
+        <td class="py-4 px-6 flex gap-2 items-center">
+          <a class="bg-blue-500 text-white text-xs px-1 rounded" routerLink="/tag/{{ tag.id }}">Edit</a>
+          <button class="bg-red-500 text-white text-xs px-1 rounded">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

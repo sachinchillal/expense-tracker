@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+.primary-btn {
+  @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 active:bg-blue-900 transition-colors;
+}
+
+.primary-btn.btn-sm {
+  @apply text-sm px-3 py-1;
+}
+
+.secondary-btn {
+  @apply bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors;
+}
+
+.secondary-btn.btn-sm {
+  @apply text-sm px-3 py-1;
+}
+
+.active {
+  @apply bg-blue-500 text-white;
+}
