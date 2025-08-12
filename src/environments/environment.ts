@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   siteName: "Addhuri",
   API_URL: "https://addhuri.com/api/",
-  ACCESS_CODE: 'd71d657c-41be-44e3-afe7-a2cb6a0983c8',
+  ACCESS_CODE: '35688e78-bdcf-42df-8212-06a6c8d907e8',
   AppTitle: 'Expense Tracker',
   AppName: 'expense-tracker'
 };

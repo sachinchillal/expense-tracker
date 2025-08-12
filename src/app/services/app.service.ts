@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { dTag, dWorkspace } from './app.interfaces';
+import { dExpense, dTag, dWorkspace } from './app.interfaces';
 import { ApiService } from './api.service';
 import { ToastService } from './toast.service';
-import { TOAST_TYPE } from './ui.interfaces';
+import { TagColorsList, TOAST_TYPE } from './ui.interfaces';
 
 const LOCAL_STORAGE_KEY = 'expense_tracker';
 interface LocalStorageData {
   tags: dTag[];
   workspaces: dWorkspace[];
+  expenses: {
+    [key: string]: dExpense[];
+  };
 }
 
 @Injectable({
@@ -18,6 +21,7 @@ export class AppService {
 
   readonly tags: dTag[] = [];
   readonly workspaces: dWorkspace[] = [];
+  readonly expenses: { [key: string]: dExpense[] } = {};
 
   constructor(private apiService: ApiService, private toastService: ToastService) {
     this.initStore();
@@ -34,6 +38,9 @@ export class AppService {
     } else {
       this.fetchWorkspaces();
     }
+    if (d.expenses && Object.keys(d.expenses).length > 0) {
+      this.assignExpenses(d.expenses);
+    }
   }
 
   // Tags
@@ -44,8 +51,8 @@ export class AppService {
   public fetchTags() {
     this.isLoading = true;
     this.apiService.getTags().subscribe({
-      next: (tags: any) => {
-        this.saveTags(tags.data);
+      next: (res: any) => {
+        this.saveTags(res.data);
         this.isLoading = false;
       },
       error: (error) => {
@@ -58,6 +65,10 @@ export class AppService {
   public saveTags(tags: dTag[]): void {
     // sort based on createdAt
     tags.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    tags.forEach((tag, index) => {
+      tag.isExist = false;
+      tag.color = TagColorsList[index % TagColorsList.length];
+    });
     this.assignTags(tags);
     const d = this.getLocalStorage();
     d.tags = this.tags;
@@ -72,8 +83,8 @@ export class AppService {
   public fetchWorkspaces() {
     this.isLoading = true;
     this.apiService.getWorkspaces().subscribe({
-      next: (workspaces: any) => {
-        this.saveWorkspaces(workspaces.data);
+      next: (res: any) => {
+        this.saveWorkspaces(res.data);
         this.isLoading = false;
       },
       error: (error) => {
@@ -89,14 +100,20 @@ export class AppService {
     d.workspaces = this.workspaces;
     this.saveToLocalStorage(d);
   }
+  // Expenses
+  private assignExpenses(expenses: { [key: string]: dExpense[] }): void {
+    Object.keys(expenses).forEach(key => {
+      this.expenses[key] = expenses[key];
+    });
+  }
 
   // Storage Management
 
-  private getLocalStorage(): LocalStorageData {
+  public getLocalStorage(): LocalStorageData {
     const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return data ? JSON.parse(data) : { tags: [], workspaces: [] };
+    return data ? JSON.parse(data) : { tags: [], workspaces: [], expenses: {} };
   }
-  private saveToLocalStorage(d: LocalStorageData): void {
+  public saveToLocalStorage(d: LocalStorageData): void {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(d));
   }
 }

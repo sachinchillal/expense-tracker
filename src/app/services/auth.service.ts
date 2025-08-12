@@ -26,9 +26,7 @@ export class AuthService {
   private initToken() {
     const ssoString = localStorage.getItem("sso");
     if (ssoString) {
-      console.log({ ssoString })
       const sso = JSON.parse(ssoString);
-      console.log({ sso })
       this.token = sso.auth.token;
     }
   }

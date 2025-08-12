@@ -47,13 +47,16 @@ export class TagComponent implements OnInit {
       name: this.name,
       description: this.description,
     };
+    this.appService.isLoading = true;
     if (this.id) {
       this.apiService.updateTag(this.id, newTag).subscribe({
         next: (res) => {
           this.toastService.showToastAuto('Success', 'Tag updated successfully.', TOAST_TYPE.SUCCESS);
+          this.appService.isLoading = false;
         },
         error: (err) => {
           this.toastService.showToastAuto('Error', 'Failed to update tag.', TOAST_TYPE.ERROR);
+          this.appService.isLoading = false;
         }
       });
     } else {
@@ -62,9 +65,11 @@ export class TagComponent implements OnInit {
           this.toastService.showToastAuto('Success', 'Tag created successfully.', TOAST_TYPE.SUCCESS);
           this.name = '';
           this.description = '';
+          this.appService.isLoading = false;
         },
         error: (err) => {
           this.toastService.showToastAuto('Error', 'Failed to create tag.', TOAST_TYPE.ERROR);
+          this.appService.isLoading = false;
         }
       });
     }

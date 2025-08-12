@@ -1,0 +1,27 @@
+<div class="calendar-month">
+  <div *ngFor="let m of months" class="group relative bg-green-800 text-white rounded-md p-4"
+    [ngClass]="{'ring-2 ring-yellow-400': m.isCurrentMonth}">
+    <button type="button" class="w-full h-full flex flex-col gap-2 items-center relative"
+      (click)="m.showDetails = !m.showDetails">
+      <div></div>
+      <b>{{ m.title }}</b>
+      <div class="text-gray-400">{{m.subtitle}}</div>
+      <!-- Details shown on click -->
+      <div [ngClass]="{'hidden': !m.showDetails, 'block': m.showDetails}"
+        class="group-hover:block absolute top-full z-10 -mt-2 w-full p-4 bg-gray-800 text-white rounded transition-opacity duration-300">
+        <div *ngFor="let e of m.expenses">
+          {{e.name}} - {{e.amount | currency: 'INR' : 'symbol' : '1.0-0'}} -
+          <span class="text-gray-400">{{e.validFrom | date: 'mediumDate'}}</span>
+        </div>
+      </div>
+      <div class="text-gray-300">
+        <!-- left bottom -->
+        <div *ngIf="m.hasYearPrevious" class="absolute left-1 bottom-0">&#x2713;</div>
+        <!-- middle bottom -->
+        <div *ngIf="m.hasYearCurrent" class="bottom-0">&#x2713;</div>
+        <!-- show at right bottom -->
+        <div *ngIf="m.hasYearNext" class="absolute right-1 bottom-0">&#x2713;</div>
+      </div>
+    </button>
+  </div>
+</div>

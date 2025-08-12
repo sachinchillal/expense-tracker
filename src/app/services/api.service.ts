@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Tag, Workspace } from './app.interfaces';
+import { Expense, Tag, Workspace } from './app.interfaces';
 
 const API = environment.API_URL;
 
@@ -29,5 +29,15 @@ export class ApiService {
   }
   updateWorkspace(id: string, workspace: Workspace) {
     return this.httpClient.put(API + 'workspace/' + id, workspace);
+  }
+
+  getExpenses(workspaceId: string) {
+    return this.httpClient.get(API + 'expense/' + workspaceId);
+  }
+  createExpense(workspaceId: string, expense: Expense) {
+    return this.httpClient.post(API + 'expense/' + workspaceId, expense);
+  }
+  updateExpense(workspaceId: string, id: string, expense: Expense) {
+    return this.httpClient.put(API + 'expense/' + workspaceId + '/' + id, expense);
   }
 }

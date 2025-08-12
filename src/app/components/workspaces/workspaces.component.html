@@ -27,9 +27,9 @@
         <td class="py-4 px-6">{{ w.status }}</td>
         <td class="py-4 px-6">{{ w.createdAt | date: 'medium' }}</td>
         <td class="py-4 px-6 flex gap-2 items-center">
-          <a class="bg-green-700 text-white text-xs px-1 rounded" routerLink="/expense/{{ w.id }}">Open</a>
+          <a class="bg-green-700 text-white text-xs px-1 rounded" routerLink="/expenses/{{ w.id }}">Open</a>
           <a class="bg-blue-500 text-white text-xs px-1 rounded" routerLink="/page/{{ w.id }}">Edit</a>
-          <button class="bg-red-500 text-white text-xs px-1 rounded">Delete</button>
+          <!-- <button class="bg-red-500 text-white text-xs px-1 rounded">Delete</button> -->
         </td>
       </tr>
     </tbody>

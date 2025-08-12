@@ -1,0 +1,123 @@
+<div class="flex items-center flex-wrap gap-2 mb-2">
+  <h1 class="text-2xl text-green-700">Expenses</h1>
+  <i class="ms-auto"></i>
+  <!-- checkbox Hide Expired -->
+  <div>
+    <label class="inline-flex items-center">
+      <input type="checkbox" [(ngModel)]="isHideExpired" (change)="onChangeHideExpired()" name="isHideExpired"
+        class="mr-2" />
+      <span class="text-sm">Hide Expired</span>
+    </label>
+  </div>
+  <!-- checkbox isHideColumns -->
+  <div>
+    <label class="inline-flex items-center">
+      <input type="checkbox" [(ngModel)]="isHideColumns" (change)="onChangeHideColumns()" name="isHideColumns"
+        class="mr-2" />
+      <span class="text-sm">Hide Columns</span>
+    </label>
+  </div>
+  <button class="bg-green-700 text-white text-sm px-2 rounded" (click)="fetchExpenses()">Refresh</button>
+  <a class="bg-green-700 text-white text-sm px-2 rounded" routerLink="/expense/{{ id }}">Add Expense</a>
+</div>
+
+<div class="flex gap-3 flex-wrap mb-2">
+  <div>
+    <label>
+      <input type="radio" [(ngModel)]="operation" name="operation" value="AND" (change)="onChangeOperation()" />
+      AND
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="radio" [(ngModel)]="operation" name="operation" value="OR" (change)="onChangeOperation()" />
+      OR
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" [(ngModel)]="isSelectedAllTags" name="allTags" (change)="onChangeSelectAllTags()" />
+      All
+    </label>
+  </div>
+  <div *ngFor="let tag of appService.tags;let index=index">
+    <label [ngClass]="{'border-b-2 border-gray-700': tag.isExist}">
+      <input type="checkbox" [(ngModel)]="tag.isSelected" name="tag{{index}}" (change)="onChangeSelectTag()" />
+      {{tag.name}}
+    </label>
+  </div>
+
+</div>
+<div
+  class="mx-auto mb-2 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+  <div class="flex items-center gap-4">
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">{{ name }}</h1>
+    <i class="ms-auto"></i>
+    <a class="text-gray-400">{{expensesFiltered.length}} / {{expenses.length}} </a>
+  </div>
+  <div class="flex items-center gap-4">
+    <p class="text-gray-600 dark:text-gray-300 text-base">{{ description }}</p>
+    <i class="ms-auto"></i>
+    <div class="text-gray-600 dark:text-gray-300 text-base">
+      <a class="text-gray-700">Total: </a>
+      <b>{{ grandTotal | currency: 'INR' : 'symbol' : '1.0-0'}}</b>
+    </div>
+  </div>
+</div>
+<div class="overflow-x-auto relative shadow-md sm:rounded-lg my-4 max-h-screen">
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="py-1 px-3">#</th>
+        <th scope="col" class="md:py-4 md:px-6 py-1 px-3" *ngFor="let col of columns"
+          [ngClass]="{ 'hidden': col.isHidden }">{{ col.name }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of expensesFiltered; let i = index"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        <th scope="row" class="py-1 px-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          {{ i + 1 }}
+        </th>
+        <td class="md:py-4 md:px-6 py-1 px-2">{{ e.name }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!isHideColumns">{{ e.description }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2">{{ e.amount | currency: 'INR' : 'symbol' : '1.0-0'}}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!isHideColumns">{{ e.validFrom | date: 'dd MMM, MM, y' }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2" [ngClass]="{'text-green-600': e.hasValidity}">
+          {{ e.hasValidity ? (e.validTo | date: 'dd MMM, MM, y') : 'NA' }}
+        </td>
+        <td class="md:py-4 md:px-6 py-1 px-2">{{ e.ymdh }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2">{{ e.remainingDays }}</td>
+        <!-- <td class="py-4 px-6 sm:py-1 px-2">
+          <span [ngClass]="{
+            'bg-green-100 text-green-800': e.status === 'ACTIVE',
+            'bg-yellow-100 text-yellow-800': e.status === 'DISABLED',
+            'bg-red-100 text-red-800': e.status === 'DELETED'
+          }" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+            {{ e.status }}
+          </span>
+        </td> -->
+        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!isHideColumns">{{ e.createdAt | date: 'medium' }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2">
+          <div class="flex flex-wrap gap-1 text-xs ">
+            <span *ngFor="let tid of e.tags" class="px-2 py-1 rounded-full"
+              [ngClass]="tagsMap[tid].color || 'bg-gray-200 text-gray-700'">
+              {{ tagsMap[tid].name || 'None' }}
+            </span>
+          </div>
+        </td>
+        <td class="md:py-4 md:px-6 py-1 px-2 flex gap-2 items-center">
+          <!-- <a class="bg-green-700 text-white text-xs px-1 rounded" routerLink="/expenses/{{ e.id }}">Open</a> -->
+          <a class="bg-blue-500 text-white text-xs px-1 rounded" routerLink="/expense/{{ id }}/{{ e.id }}">Edit</a>
+          <!-- <button class="bg-red-500 text-white text-xs px-1 rounded">Delete</button> -->
+        </td>
+      </tr>
+      <tr *ngIf="expensesFiltered.length === 0">
+        <td colspan="100%" class="text-center py-4 text-gray-500">No expenses found</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="my-10">
+  <app-calendar [expensesFiltered]="expensesFiltered" />
+</div>

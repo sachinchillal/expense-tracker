@@ -1,0 +1,73 @@
+<div class="max-w-md mx-auto mb-10 p-6 bg-white dark:bg-zinc-900 rounded shadow">
+  <h2 class="text-2xl font-bold mb-6 text-center">
+    {{id ? 'Edit Expense' : 'Create Expense'}}
+  </h2>
+  <form (ngSubmit)="createRecord()" autocomplete="on" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium mb-1" for="name">Name</label>
+      <input id="name" name="name" type="text" [(ngModel)]="name"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+        required />
+    </div>
+    <div>
+      <label class="block text-sm font-medium mb-1" for="description">Description</label>
+      <input id="description" name="description" type="text" [(ngModel)]="description"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+        required />
+    </div>
+    <div class="flex gap-2">
+      <div>
+        <label class="block text-sm font-medium mb-1" for="amount">Amount</label>
+        <input id="amount" name="amount" type="number" [(ngModel)]="amount"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+          required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="returns">Returns</label>
+        <input id="returns" name="returns" type="number" [(ngModel)]="returns"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+          required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="total">Total</label>
+        <input id="total" name="total" type="number" [(ngModel)]="total"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+          required />
+      </div>
+    </div>
+    <!-- has validity checkbox -->
+    <div>
+      <label class="inline-flex items-center">
+        <input type="checkbox" [(ngModel)]="hasValidity" name="hasValidity" class="mr-2" />
+        <span class="text-sm">Has Validity</span>
+      </label>
+    </div>
+    <div class="flex gap-2">
+      <!-- date selection -->
+      <div class="w-full">
+        <label class="block text-sm font-medium mb-1" for="validFrom">Valid From</label>
+        <input id="validFrom" name="validFrom" type="date" [(ngModel)]="validFrom"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+          required />
+      </div>
+      <div class="w-full">
+        <label class="block text-sm font-medium mb-1" for="validTo">Valid To</label>
+        <input id="validTo" name="validTo" type="date" [(ngModel)]="validTo"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white"
+          required />
+      </div>
+    </div>
+    <div class="flex gap-3 flex-wrap">
+      <!-- appService.tags show list -->
+      <div *ngFor="let tag of appService.tags;let index=index">
+        <label>
+          <input type="checkbox" [(ngModel)]="tag.isSelected" name="tag{{index}}" />
+          {{tag.name}}
+        </label>
+      </div>
+
+    </div>
+
+    <button type="submit" class="primary-btn w-full">{{id ? 'Update' : 'Create'}}</button>
+  </form>
+</div>

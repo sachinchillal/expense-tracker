@@ -13,7 +13,6 @@ export class ThemeService {
 
   private init() {
     this.currentThemeType = localStorage.getItem('theme') as THEME_TYPE || THEME_TYPE.AUTO;
-    console.log(this.currentThemeType)
     this.changeTheme(this.currentThemeType);
   }
 
