@@ -11,6 +11,7 @@ export class AuthService {
 
   constructor() {
     this.initLocalID();
+    this.initUID();
     this.initToken();
   }
 
@@ -23,11 +24,21 @@ export class AuthService {
       localStorage.setItem("li", this.localId);
     }
   }
+  private initUID() {
+    const uid = localStorage.getItem("uid");
+    if (uid) {
+      this.uid = uid;
+    } else {
+      this.uid = (+new Date()).toString(36);
+      localStorage.setItem("uid", this.uid);
+    }
+  }
   private initToken() {
     const ssoString = localStorage.getItem("sso");
     if (ssoString) {
       const sso = JSON.parse(ssoString);
-      this.token = sso.auth.token;
+      this.token = sso.auth?.token;
+      this.token = sso.auth?.user?.uid;
     }
   }
 }
