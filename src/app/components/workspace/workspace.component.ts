@@ -47,13 +47,16 @@ export class WorkspaceComponent implements OnInit {
       name: this.name,
       description: this.description,
     };
+    this.appService.isLoading = true;
     if (this.id) {
       this.apiService.updateWorkspace(this.id, newWorkspace).subscribe({
         next: (res) => {
           this.toastService.showToastAuto('Success', 'Page updated successfully.', TOAST_TYPE.SUCCESS);
+          this.appService.isLoading = false;
         },
         error: (err) => {
           this.toastService.showToastAuto('Error', 'Failed to update Page.', TOAST_TYPE.ERROR);
+          this.appService.isLoading = false;
         }
       });
     } else {
@@ -62,9 +65,11 @@ export class WorkspaceComponent implements OnInit {
           this.toastService.showToastAuto('Success', 'Page created successfully.', TOAST_TYPE.SUCCESS);
           this.name = '';
           this.description = '';
+          this.appService.isLoading = false;
         },
         error: (err) => {
           this.toastService.showToastAuto('Error', 'Failed to create Page.', TOAST_TYPE.ERROR);
+          this.appService.isLoading = false;
         }
       });
     }

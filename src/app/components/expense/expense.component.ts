@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
-import { Expense, INIT_EXPENSE } from '../../services/app.interfaces';
+import { Expense } from '../../services/app.interfaces';
 import { ToastService } from '../../services/toast.service';
 import { TOAST_TYPE } from '../../services/ui.interfaces';
 import { ActivatedRoute } from '@angular/router';
@@ -27,8 +27,9 @@ export class ExpenseComponent implements OnInit {
   returns = '';
   total = '';
 
-  hasValidity = false;
+  isSIP = false;
 
+  hasValidity = false;
   validFrom = new Date().toISOString().split('T')[0];
   validTo = new Date().toISOString().split('T')[0];
 
@@ -52,12 +53,17 @@ export class ExpenseComponent implements OnInit {
         if (e) {
           this.name = e.name;
           this.description = e.description;
+
           this.amount = e.amount.toString();
           this.returns = e.returns.toString();
           this.total = e.total.toString();
+
+          this.isSIP = e.isSIP;
+
           this.hasValidity = e.hasValidity;
           this.validFrom = new Date(e.validFrom).toISOString().split('T')[0];
           this.validTo = new Date(e.validTo).toISOString().split('T')[0];
+
           this.appService.tags.forEach(tag => {
             tag.isSelected = e.tags.includes(tag.id);
           });
@@ -74,15 +80,20 @@ export class ExpenseComponent implements OnInit {
       return;
     }
     const newExpense: Expense = {
-      ...INIT_EXPENSE,
       name: this.name,
       description: this.description,
+
       amount: parseInt(this.amount) || 0,
-      tags: this.appService.tags.filter(tag => tag.isSelected).map(tag => tag.id),
+      returns: parseInt(this.returns) || 0,
+      total: parseInt(this.total) || 0,
+
+      isSIP: this.isSIP,
 
       hasValidity: this.hasValidity,
       validFrom: +new Date(this.validFrom),
-      validTo: +new Date(this.validTo)
+      validTo: +new Date(this.validTo),
+
+      tags: this.appService.tags.filter(tag => tag.isSelected).map(tag => tag.id),
     };
     this.appService.isLoading = true;
     if (this.id) {

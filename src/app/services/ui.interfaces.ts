@@ -135,3 +135,9 @@ const TagColors = [
 export const TagColorsList = TagColors.map(tag => {
   return [tag.light.bg, tag.light.text, tag.dark.bg, tag.dark.text].join(' ');
 })
+
+export interface Settings {
+  isHideExpired: boolean;
+  isHideColumns: boolean;
+}
+export const INIT_SETTINGS: Settings = { isHideExpired: true, isHideColumns: true };

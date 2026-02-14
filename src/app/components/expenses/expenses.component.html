@@ -4,16 +4,16 @@
   <!-- checkbox Hide Expired -->
   <div>
     <label class="inline-flex items-center">
-      <input type="checkbox" [(ngModel)]="isHideExpired" (change)="onChangeHideExpired()" name="isHideExpired"
-        class="mr-2" />
+      <input type="checkbox" [(ngModel)]="appService.settings.isHideExpired" (change)="onChangeHideExpired()"
+        name="isHideExpired" class="mr-2" />
       <span class="text-sm">Hide Expired</span>
     </label>
   </div>
   <!-- checkbox isHideColumns -->
   <div>
     <label class="inline-flex items-center">
-      <input type="checkbox" [(ngModel)]="isHideColumns" (change)="onChangeHideColumns()" name="isHideColumns"
-        class="mr-2" />
+      <input type="checkbox" [(ngModel)]="appService.settings.isHideColumns" (change)="onChangeHideColumns()"
+        name="isHideColumns" class="mr-2" />
       <span class="text-sm">Hide Columns</span>
     </label>
   </div>
@@ -79,10 +79,12 @@
         <th scope="row" class="py-1 px-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
           {{ i + 1 }}
         </th>
-        <td class="md:py-4 md:px-6 py-1 px-2">{{ e.name }}</td>
-        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!isHideColumns">{{ e.description }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2">{{ e.name }} {{ e.isSIP ? e.isVirtual ? '&#9898;' : '&#10227;' : '' }}
+        </td>
+        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!appService.settings.isHideColumns">{{ e.description }}</td>
         <td class="md:py-4 md:px-6 py-1 px-2">{{ e.amount | currency: 'INR' : 'symbol' : '1.0-0'}}</td>
-        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!isHideColumns">{{ e.validFrom | date: 'dd MMM, MM, y' }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!appService.settings.isHideColumns">
+          {{ e.validFrom | date: 'dd MMM, MM, y' }}</td>
         <td class="md:py-4 md:px-6 py-1 px-2" [ngClass]="{'text-green-600': e.hasValidity}">
           {{ e.hasValidity ? (e.validTo | date: 'dd MMM, MM, y') : 'NA' }}
         </td>
@@ -97,7 +99,8 @@
             {{ e.status }}
           </span>
         </td> -->
-        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!isHideColumns">{{ e.createdAt | date: 'medium' }}</td>
+        <td class="md:py-4 md:px-6 py-1 px-2" *ngIf="!appService.settings.isHideColumns">
+          {{ e.createdAt | date: 'medium' }}</td>
         <td class="md:py-4 md:px-6 py-1 px-2">
           <div class="flex flex-wrap gap-1 text-xs ">
             <span *ngFor="let tid of e.tags" class="px-2 py-1 rounded-full"

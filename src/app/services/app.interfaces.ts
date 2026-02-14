@@ -19,11 +19,15 @@ export const INIT_WORKSPACE: Workspace = {
 
 export interface Expense extends Tag {
   amount: number;
+  returns: number;
+  total: number;
+
+  isSIP: boolean;
+
   hasValidity: boolean;
   validFrom: number;
   validTo: number;
-  returns: number;
-  total: number;
+
   tags: string[];
 }
 export const INIT_EXPENSE: Expense = {
@@ -33,6 +37,8 @@ export const INIT_EXPENSE: Expense = {
   amount: 0,
   returns: 0,
   total: 0,
+
+  isSIP: false,
 
   hasValidity: false,
   validFrom: 0,
@@ -61,6 +67,8 @@ export interface dWorkspace {
   status: RECORD_STATUS;
   createdAt: string;
   updatedAt: string;
+
+  expensesCount?: number;
 }
 
 export interface dExpense {
@@ -68,12 +76,12 @@ export interface dExpense {
   name: string;
   description: string;
   status: RECORD_STATUS;
-  createdAt: string;
-  updatedAt: string;
 
   amount: number;
   returns: number;
   total: number;
+
+  isSIP: boolean;
 
   hasValidity: boolean;
   validFrom: number;
@@ -81,8 +89,11 @@ export interface dExpense {
 
   tags: string[];
 
+  createdAt: string;
+  updatedAt: string;
 
   // UI props
   ymdh?: string;
   remainingDays?: number;
+  isVirtual?: boolean;
 }

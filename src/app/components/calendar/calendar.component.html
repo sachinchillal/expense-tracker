@@ -8,7 +8,7 @@
       <div class="text-gray-400">{{m.subtitle}}</div>
       <!-- Details shown on click -->
       <div [ngClass]="{'hidden': !m.showDetails, 'block': m.showDetails}"
-        class="group-hover:block absolute top-full z-10 -mt-2 w-full p-4 bg-gray-800 text-white rounded transition-opacity duration-300">
+        class="group-hover:block absolute top-full z-10 -mt-2 w-full p-4 bg-gray-800 text-white rounded transition-opacity duration-300 text-right">
         <div *ngFor="let e of m.expenses">
           {{e.name}} - {{e.amount | currency: 'INR' : 'symbol' : '1.0-0'}} -
           <span class="text-gray-400">{{e.validFrom | date: 'mediumDate'}}</span>
@@ -18,9 +18,11 @@
         <!-- left bottom -->
         <div *ngIf="m.hasYearPrevious" class="absolute left-1 bottom-0">&#x2713;</div>
         <!-- middle bottom -->
-        <div *ngIf="m.hasYearCurrent" class="bottom-0">&#x2713;</div>
+        <div *ngIf="m.hasYearCurrent" class="bottom-0" [ngClass]="{'text-yellow-400': m.isFutureYearCurrent}">&#x2713;
+        </div>
         <!-- show at right bottom -->
-        <div *ngIf="m.hasYearNext" class="absolute right-1 bottom-0">&#x2713;</div>
+        <div *ngIf="m.hasYearNext" class="absolute right-1 bottom-0"
+          [ngClass]="{'text-yellow-400': m.isFutureYearNext}">&#x2713;</div>
       </div>
     </button>
   </div>

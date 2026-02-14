@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dExpense, dTag, dWorkspace } from './app.interfaces';
 import { ApiService } from './api.service';
 import { ToastService } from './toast.service';
-import { TagColorsList, TOAST_TYPE } from './ui.interfaces';
+import { INIT_SETTINGS, Settings, TagColorsList, TOAST_TYPE } from './ui.interfaces';
 
 const LOCAL_STORAGE_KEY = 'expense_tracker';
 interface LocalStorageData {
@@ -11,6 +11,7 @@ interface LocalStorageData {
   expenses: {
     [key: string]: dExpense[];
   };
+  settings: Settings;
 }
 
 @Injectable({
@@ -22,6 +23,7 @@ export class AppService {
   readonly tags: dTag[] = [];
   readonly workspaces: dWorkspace[] = [];
   readonly expenses: { [key: string]: dExpense[] } = {};
+  settings: Settings = { ...INIT_SETTINGS };
 
   constructor(private apiService: ApiService, private toastService: ToastService) {
     this.initStore();
@@ -34,12 +36,15 @@ export class AppService {
       this.fetchTags();
     }
     if (d.workspaces && d.workspaces.length > 0) {
+      if (d.expenses && Object.keys(d.expenses).length > 0) {
+        this.assignExpenses(d.expenses);
+      }
       this.assignWorkspaces(d.workspaces);
     } else {
       this.fetchWorkspaces();
     }
-    if (d.expenses && Object.keys(d.expenses).length > 0) {
-      this.assignExpenses(d.expenses);
+    if (d.settings) {
+      this.settings = d.settings;
     }
   }
 
@@ -78,6 +83,9 @@ export class AppService {
   // Workspaces
   private assignWorkspaces(workspaces: dWorkspace[]): void {
     this.workspaces.length = 0; // Clear existing workspaces
+    workspaces.forEach(w => {
+      w.expensesCount = this.expenses[w.id]?.length || 0;
+    });
     this.workspaces.push(...workspaces);
   }
   public fetchWorkspaces() {
@@ -111,7 +119,8 @@ export class AppService {
 
   public getLocalStorage(): LocalStorageData {
     const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return data ? JSON.parse(data) : { tags: [], workspaces: [], expenses: {} };
+    const settings = { ...INIT_SETTINGS };
+    return data ? JSON.parse(data) : { tags: [], workspaces: [], expenses: {}, settings };
   }
   public saveToLocalStorage(d: LocalStorageData): void {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(d));

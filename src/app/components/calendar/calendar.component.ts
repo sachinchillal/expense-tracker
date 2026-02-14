@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../../services/app.service';
 import { dExpense } from '../../services/app.interfaces';
 import { CommonModule } from '@angular/common';
-import { InfoComponent } from '../info/info.component';
+
 const Months = [
   { title: 'Jan', days: 31 },
   { title: 'Feb', days: 28 },
@@ -30,12 +30,14 @@ interface CalendarInfo {
   hasYearNext: boolean;
 
   showDetails: boolean;
+  isFutureYearCurrent: boolean;
+  isFutureYearNext: boolean;
 }
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, InfoComponent],
+  imports: [CommonModule],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss'
 })
@@ -70,22 +72,25 @@ export class CalendarComponent implements OnInit, OnChanges {
         hasYearNext: false,
 
         showDetails: false,
+        isFutureYearCurrent: false,
+        isFutureYearNext: false
       })
     })
+
+    // one time
     const now = new Date();
-    const nowMonth = now.getMonth();
-    const nowYear = now.getFullYear();
-    this.months[nowMonth].isCurrentMonth = true;
+    const monthCurrent = now.getMonth();
+
+    const currYear = now.getFullYear();
+    const preYear = currYear - 1;
+    const nextYear = currYear + 1;
+
+    this.months[monthCurrent].isCurrentMonth = true;
 
     this.expensesFiltered.forEach(e => {
       if (e.hasValidity) {
 
       } else {
-        // one time
-        const now = new Date();
-        const currYear = now.getFullYear();
-        const preYear = currYear - 1;
-        const nextYear = currYear + 1;
 
         const d = new Date(e.validFrom);
         const year = d.getFullYear();
@@ -102,8 +107,14 @@ export class CalendarComponent implements OnInit, OnChanges {
             this.months[m].hasYearPrevious = true;
           } else if (year == currYear) {
             this.months[m].hasYearCurrent = true;
+            if (e.validFrom > now.getTime()) {
+              this.months[m].isFutureYearCurrent = true;
+            }
           } else if (year == nextYear) {
             this.months[m].hasYearNext = true;
+            if (e.validFrom > now.getTime()) {
+              this.months[m].isFutureYearNext = true;
+            }
           }
         }
       }

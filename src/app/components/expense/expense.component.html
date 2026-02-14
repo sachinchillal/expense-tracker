@@ -2,7 +2,7 @@
   <h2 class="text-2xl font-bold mb-6 text-center">
     {{id ? 'Edit Expense' : 'Create Expense'}}
   </h2>
-  <form (ngSubmit)="createRecord()" autocomplete="on" class="space-y-4">
+  <form (ngSubmit)="createRecord()" autocomplete="on" class="flex flex-col gap-4">
     <div>
       <label class="block text-sm font-medium mb-1" for="name">Name</label>
       <input id="name" name="name" type="text" [(ngModel)]="name"
@@ -36,11 +36,19 @@
       </div>
     </div>
     <!-- has validity checkbox -->
-    <div>
-      <label class="inline-flex items-center">
-        <input type="checkbox" [(ngModel)]="hasValidity" name="hasValidity" class="mr-2" />
-        <span class="text-sm">Has Validity</span>
-      </label>
+    <div class="flex gap-2">
+      <div class="w-full">
+        <label class="inline-flex items-center">
+          <input type="checkbox" [(ngModel)]="isSIP" name="isSIP" class="mr-2" />
+          <span class="text-sm">Is SIP</span>
+        </label>
+      </div>
+      <div class="w-full">
+        <label class="inline-flex items-center">
+          <input type="checkbox" [(ngModel)]="hasValidity" name="hasValidity" class="mr-2" />
+          <span class="text-sm">Has Validity</span>
+        </label>
+      </div>
     </div>
     <div class="flex gap-2">
       <!-- date selection -->

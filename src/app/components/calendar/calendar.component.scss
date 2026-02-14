@@ -3,11 +3,11 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   justify-content: center;
+  margin-bottom: 10rem;
 }
 
 
 @media screen and (max-width: 768px) {
-
   .calendar-month {
     grid-template-columns: repeat(2, 1fr);
   }

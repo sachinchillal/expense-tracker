@@ -22,8 +22,6 @@ export class ExpensesComponent implements OnInit {
   name = '';
   description = '';
 
-  isHideExpired = true;
-  isHideColumns = true;
   isSelectedAllTags = true;
 
   expenses: dExpense[] = [];
@@ -34,14 +32,14 @@ export class ExpensesComponent implements OnInit {
 
   readonly columns = [
     { name: 'Name', prop: 'name', },
-    { name: 'Description', prop: 'description', isHidden: this.isHideColumns },
+    { name: 'Description', prop: 'description', isHidden: true },
     { name: 'Amount', prop: 'amount' },
     // { name: 'Status', prop: 'status' },
-    { name: 'Start Date', prop: '', isHidden: this.isHideColumns },
+    { name: 'Start Date', prop: '', isHidden: true },
     { name: 'End Date', prop: '' },
     { name: 'YMDH', prop: '' },
     { name: 'D', prop: '' },
-    { name: 'Created At', prop: 'createdAt', isHidden: this.isHideColumns },
+    { name: 'Created At', prop: 'createdAt', isHidden: true },
     { name: 'Tags', prop: 'tags' },
     { name: 'Action', prop: 'action' }
   ];
@@ -64,6 +62,7 @@ export class ExpensesComponent implements OnInit {
     this.appService.tags.forEach((tag, index) => {
       this.tagsMap[tag.id] = tag;
     });
+    this.onChangeHideColumns(); // to set initial state of columns
   }
   private init() {
     if (this.appService.expenses[this.id]) {
@@ -113,14 +112,31 @@ export class ExpensesComponent implements OnInit {
     this.assignExpensesFiltered(expenses);
   }
   private assignExpensesFiltered(expenses: dExpense[]) {
-    this.expensesFiltered = this.isHideExpired ? expenses.filter(e => ((e.remainingDays || 0) > 0) || !e.hasValidity) : expenses;
+    this.expensesFiltered = this.appService.settings.isHideExpired ? expenses.filter(e => ((e.remainingDays || 0) > 0) || !e.hasValidity) : expenses;
+
+    // this.expensesFiltered = this.isHideExpired ? this.expenses.filter(e => e.hasValidity) : this.expenses;
+
+    const expensesFilteredMaster: dExpense[] = [];
+    this.expensesFiltered.forEach(e => {
+      if (e.isSIP && !e.isVirtual) {
+        expensesFilteredMaster.push(e);
+        const start = new Date(e.validFrom);
+        const end = new Date(e.validTo);
+        start.setMonth(start.getMonth() + 1); // to exclude starting month
+        for (let d = start; d <= end; d.setMonth(d.getMonth() + 1)) {
+          expensesFilteredMaster.push({ ...e, validFrom: +d, isVirtual: true });
+        }
+      } else {
+        expensesFilteredMaster.push(e);
+      }
+    });
+    this.expensesFiltered = expensesFilteredMaster;
     this.grandTotal = 0;
     const tagIds = new Set<string>();
     this.expensesFiltered.forEach(e => {
       this.grandTotal += e.amount;
       e.tags.forEach(tagId => tagIds.add(tagId));
     });
-    // this.expensesFiltered = this.isHideExpired ? this.expenses.filter(e => e.hasValidity) : this.expenses;
     this.appService.tags.forEach(tag => {
       tag.isExist = tagIds.has(tag.id);
     });
@@ -131,7 +147,7 @@ export class ExpensesComponent implements OnInit {
   onChangeHideColumns() {
     this.columns.forEach(col => {
       if (col.hasOwnProperty('isHidden')) {
-        col.isHidden = this.isHideColumns;
+        col.isHidden = this.appService.settings.isHideColumns;
       }
     })
   }
